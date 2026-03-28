@@ -100,9 +100,45 @@ def atualizar_pontuacao(pontuacao):
     else:
         return False
 
+#criar todo o codigo da tela de fim de jogo junto aqui: 
+def tela_fim_de_jogo(pontuacao):
+    rodando_fim = True#controla o loop da tela final
+    
+    #fontes 
+    fonte_titulo = pygame.font.Font(None, 80)
+    fonte_texto = pygame.font.Font(None, 40)
+    
+    #criar botão (posicao x, y, largura, altura)
+    botao = pygame.Rect(300,500,200,60)
 
+    #loop da tela final
+    while rodando_fim: 
+        tela.fill(cores["preta"])#limpar tela
 
+        #desenhar titulo
+        titulo = fonte_titulo.render("FIM DE JOGO", True, cores["branca"])
+        tela.blit(titulo, (200, 200))
 
+        #desenhar pontuação final
+        texto_pontos = fonte_texto.render(f"Pontos: {pontuacao}", True, cores["amarela"])
+        tela.blit(texto_pontos, (300,350))
+        #desenhar botão
+        pygame.draw.rect(tela, cores["azul"], botao)
+
+        #texto do botão
+        texto_botao = fonte_texto.render("SAIR", True, cores["branca"])
+        tela.blit(texto_botao, (350, 515))
+
+        #eventos da tela final
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                rodando_fim = False#fechar jogo
+
+            if evento.type == pygame.MOUSEBUTTONDOWN:#clique do mouse
+                if botao.collidepoint(evento.pos):#verifica se clicou no botão
+                    rodando_fim = False#sair do jogo
+
+        pygame.display.flip()#atualizar tela
 
 
 # desenhar as coisas na tela
@@ -124,16 +160,24 @@ while not fim_jogo:
     desenhar_inicio_jogo()
     desenhar_blocos(blocos)
     fim_jogo = atualizar_pontuacao(qtd_total_blocos - len(blocos))
+
+    #eventos do jogo
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:
             fim_jogo = True
-    
+        
     movimentar_jogador(evento)
+
     movimento_bola = movimentar_bola(bola)# movimento da bola 
+
     if not movimento_bola:#contando como acaba o jogo
         fim_jogo = True
+
     pygame.time.wait(1)#para o jogo verificar a cada milissegundo e não ficar estatico
     pygame.display.flip()#atualizar tela
+
+#tela final
+tela_fim_de_jogo(qtd_total_blocos - len(blocos))
 
 pygame.quit()#fechar tudo
 
